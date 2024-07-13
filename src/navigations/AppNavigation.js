@@ -5,6 +5,7 @@ import Modal from 'screens/modal/Modal';
 import Home from 'screens/home/Home';
 import { COLOR } from 'global/styles';
 import Paused from 'screens/paused/Paused';
+import NewReminder from 'components/newReminder/NewReminder';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -47,6 +48,20 @@ export const HomeNavigation = () => {
         options={defaultOptions}
       />
       <Stack.Screen
+        name="NewReminder"
+        component={NewReminder}
+        options={({ route }) => {
+          return {
+            headerShown: true,
+            headerTintColor: 'white',
+            headerStyle: {
+              backgroundColor: COLOR.primary,
+            },
+            title: 'Nudge Me',
+          };
+        }}
+      />
+      {/* <Stack.Screen
         name="Modal"
         component={Modal}
         options={({ route }) => {
@@ -60,7 +75,7 @@ export const HomeNavigation = () => {
             title: title || 'Nudge Me',
           };
         }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 };

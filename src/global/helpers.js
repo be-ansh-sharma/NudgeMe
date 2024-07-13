@@ -1,4 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import notifee, {
+  AndroidImportance,
+  AuthorizationStatus,
+} from '@notifee/react-native';
 
 export const getFromStorage = async key => {
   try {
@@ -24,3 +28,43 @@ export const clearStorage = async () => {
     throw err;
   }
 };
+
+export const handleNotificationsCheck = async () => {
+  const settings = await notifee.requestPermission();
+  if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
+    console.log('Permission settings:', settings);
+  } else {
+    console.log('User declined permissions');
+  }
+  await notifee.createChannel({
+    id: 'default',
+    name: 'Nudge Me',
+    lights: true,
+    vibration: true,
+    importance: AndroidImportance.DEFAULT,
+  });
+};
+
+export const getMinutes = () => {
+  return Array(60)
+    .fill()
+    .map((_, index) => {
+      return {
+        label: `${index}`,
+        value: `${index}`,
+      };
+    });
+};
+
+export const getHours = () => {
+  return Array(12)
+    .fill()
+    .map((_, index) => {
+      return {
+        label: `${index}`,
+        value: `${index}`,
+      };
+    });
+};
+
+export const setReminders = () => {};

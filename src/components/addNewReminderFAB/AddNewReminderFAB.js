@@ -1,17 +1,19 @@
 import React from 'react';
-import { SafeAreaView, View, StyleSheet } from 'react-native';
-import styles from './AddNewReminder.style';
+import { SafeAreaView } from 'react-native';
+import styles from './AddNewReminderFAB.style';
 
 import { AnimatedFAB } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
-const AddNewReminder = () => {
+const AddNewReminderFAB = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <AnimatedFAB
         icon={'plus'}
         label={'Label'}
         extended={false}
-        onPress={() => console.log('Pressed')}
+        onPress={() => navigation.navigate('NewReminder')}
         visible={true}
         animateFrom={'right'}
         iconMode={'static'}
@@ -21,4 +23,4 @@ const AddNewReminder = () => {
   );
 };
 
-export default AddNewReminder;
+export default AddNewReminderFAB;
