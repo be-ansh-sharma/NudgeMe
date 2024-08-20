@@ -34,4 +34,8 @@ export default StyleSheet.create({
     marginTop: '10%',
     fontSize: 22,
   },
+  inputmessage: {
+    width: 200,
+    height: 70,
+  },
 });

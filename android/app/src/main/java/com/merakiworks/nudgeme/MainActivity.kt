@@ -1,4 +1,4 @@
-package com.nudgeme
+package com.merakiworks.nudgeme
 import expo.modules.ReactActivityDelegateWrapper
 import android.os.Bundle;
 import com.facebook.react.ReactActivity

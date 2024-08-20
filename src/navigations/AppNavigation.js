@@ -6,6 +6,8 @@ import Home from 'screens/home/Home';
 import { COLOR } from 'global/styles';
 import Paused from 'screens/paused/Paused';
 import NewReminder from 'components/newReminder/NewReminder';
+import Login from 'screens/Auth/Login';
+import Register from 'screens/Auth/Register';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -34,6 +36,31 @@ const HomeStack = () => {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Paused" component={Paused} />
     </Tab.Navigator>
+  );
+};
+
+const LoginRegister = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="Login"
+      screenOptions={{ headerShown: true }}
+      sceneContainerStyle={{}}>
+      <Tab.Screen name="Login" component={Login} />
+      <Tab.Screen name="Register" component={Register} />
+    </Tab.Navigator>
+  );
+};
+
+export const AuthNavigation = () => {
+  console.log('pp');
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginRegister}
+        options={defaultOptions}
+      />
+    </Stack.Navigator>
   );
 };
 

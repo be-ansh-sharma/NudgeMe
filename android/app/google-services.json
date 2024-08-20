@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1098252207466",
+    "project_id": "nudgeme-3c591",
+    "storage_bucket": "nudgeme-3c591.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098252207466:android:d2ade01d39ddc5e0325113",
+        "android_client_info": {
+          "package_name": "com.merakiworks.nudgeme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWh1hGpLK4yrPjyDcrSN5XDWDNx52pNgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

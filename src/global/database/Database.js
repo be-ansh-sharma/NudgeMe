@@ -1,7 +1,15 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = await SQLite.openDatabaseAsync('db');
+export default class Database {
+  constructor() {
+    this._db = null;
+  }
 
-await db.execAsync(`
-  CREATE TABLE IF NOT EXISTS nudgeme (id INTEGER PRIMARY KEY NOT NULL, occurance TEXT NOT NULL, time INTEGER, message TEXT NOT NULL, upcomingNotifee TEXT, skipstarttime TEXT, skipendtime TEXT);
-`);
+  init = async () => {
+    this._db = await SQLite.openDatabaseAsync('db');
+    this._db.execAsync(`
+        CREATE TABLE IF NOT EXISTS nudgeme (id INTEGER PRIMARY KEY NOT NULL, status TEXT, occurance TEXT NOT NULL, hours INTEGER, minutes INTEGER, message TEXT NOT NULL);
+      `);
+    return this._db;
+  };
+}
