@@ -3,18 +3,12 @@ import AuthForm from 'components/auth/AuthForm';
 import Snack from 'components/snackmessage/Snack';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import useReminderStore from 'store/reminder';
 
 const Register = () => {
   const [error, setError] = useState('');
-  const setUser = useReminderStore(state => state.setUser);
   const onSubmitHandler = (email, password) => {
-    console.log(email, password);
     auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(user => {
-        setUser(user);
-      })
       .catch(err => {
         if (err.code === 'auth/email-already-in-use') {
           setError('That email address is already in use!');

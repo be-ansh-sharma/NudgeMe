@@ -1,35 +1,27 @@
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
+
 import DatePicker from 'react-native-date-picker';
 import { Button } from 'react-native-paper';
 
-export default ({ dateHandler }) => {
-  const [date, setDate] = useState(new Date());
+export const TimePicker = ({ time, timeHandler }) => {
+  const [date, setDate] = useState(time);
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(false);
 
   return (
     <>
-      <Button
-        mode="elevated"
-        title="Open"
-        onPress={() => {
-          setOpen(true);
-        }}>
-        {selected
-          ? dayjs(date).add(10, 'day').format('DD-MM-YYYY, hh mm')
-          : 'Custom'}
+      <Button title="Open" onPress={() => setOpen(true)}>
+        {dayjs(date).format('hh mm A')}
       </Button>
       <DatePicker
         modal
+        mode="time"
         open={open}
-        minimumDate={new Date()}
         date={date}
         onConfirm={date => {
           setOpen(false);
           setDate(date);
-          setSelected(true);
-          dateHandler(date);
+          timeHandler(date);
         }}
         onCancel={() => {
           setOpen(false);

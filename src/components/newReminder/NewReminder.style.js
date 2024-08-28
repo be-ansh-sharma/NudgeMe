@@ -25,10 +25,19 @@ export default StyleSheet.create({
     borderColor: COLOR.primary,
     textTransform: 'capitalize',
   },
+  selected: {
+    borderBottomColor: COLOR.primary,
+    borderBottomWidth: 1,
+    color: COLOR.primary,
+  },
   picker: {
     flexDirection: 'row',
-    marginTop: '10%',
+
     height: '7%',
+  },
+  dates: {
+    flexDirection: 'row',
+    //marginTop: '4%',
   },
   label: {
     marginTop: '10%',

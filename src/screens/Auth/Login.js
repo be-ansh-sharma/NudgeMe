@@ -3,18 +3,12 @@ import AuthForm from 'components/auth/AuthForm';
 import Snack from 'components/snackmessage/Snack';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import useReminderStore from 'store/reminder';
 
 const Login = () => {
   const [error, setError] = useState('');
-  const setUser = useReminderStore(state => state.setUser);
   const onSubmitHandler = (email, password) => {
-    console.log(email, password);
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(user => {
-        setUser(user);
-      })
       .catch(err => {
         if ((err.code = 'auth/invalid-credential')) {
           setError('The Credentials are Incorrect!');
