@@ -5,15 +5,16 @@ import Modal from 'screens/modal/Modal';
 import Home from 'screens/home/Home';
 import { COLOR } from 'global/styles';
 import Paused from 'screens/paused/Paused';
-import NewReminder from 'components/newReminder/NewReminder';
+import NewReminder from 'components/newReminders/NewReminder';
 import Login from 'screens/Auth/Login';
 import Register from 'screens/Auth/Register';
+import SettingMenu from 'components/settingmenu/SettingMenu';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 
 const defaultOptions = {
-  headerLeft: null,
+  headerRight: () => <SettingMenu />,
   headerTitle: 'Nudge Me',
   headerStyle: {
     backgroundColor: COLOR.primary,

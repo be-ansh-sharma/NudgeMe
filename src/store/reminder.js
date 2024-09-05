@@ -49,16 +49,39 @@ const useReminderStore = create(
         }
       },
       setToken: token => {
+        let user = get().user;
+        user.token = token;
         set({
-          user: {
-            ...get().user,
-            token,
-          },
+          user,
         });
       },
       setUser: user => {
         set({
           user,
+        });
+      },
+      deleteReminder: uuid => {
+        let reminders = get().reminders;
+        let newReminder = { ...reminders };
+        delete newReminder[uuid];
+        set({
+          reminders: newReminder,
+        });
+      },
+      pauseReminder: uuid => {
+        let reminders = get().reminders;
+        let newReminder = { ...reminders };
+        newReminder[uuid].status = 'PAUSED';
+        set({
+          reminders: newReminder,
+        });
+      },
+      resumeReminder: uuid => {
+        let reminders = get().reminders;
+        let newReminder = { ...reminders };
+        newReminder[uuid].status = 'ACTIVE';
+        set({
+          reminders: newReminder,
         });
       },
     }),

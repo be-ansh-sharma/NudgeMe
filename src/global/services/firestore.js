@@ -1,6 +1,4 @@
 import firestore from '@react-native-firebase/firestore';
-import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
 
 export const saveUserToStore = async (user, update) => {
   let obj = {
@@ -12,34 +10,84 @@ export const saveUserToStore = async (user, update) => {
     uid: user.uid,
   };
   if (update) {
-    updateDocument('users', user.uid, obj);
+    updateUserDocument('users', user.uid, obj);
   } else {
     await firestore().collection('users').doc(user.uid).set(obj);
   }
 };
 
-export const updateDocument = async (collectionName, docID, data) => {
+export const updateUserDocument = async (collectionName, docID, data) => {
   await firestore().collection(collectionName).doc(docID).update(data);
 };
 
+export const updateReminderDocument = async (userId, reminderRef, data) => {
+  try {
+    await firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('reminders')
+      .doc(reminderRef)
+      .update(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const addRemindersToUser = async (col, uid, subCol, data) => {
-  data.uuid = uuidv4();
-  await firestore().collection(col).doc(uid).collection(subCol).add(data);
+  try {
+    await firestore()
+      .collection(col)
+      .doc(uid)
+      .collection(subCol)
+      .doc(data.uuid)
+      .set(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteReminderFromRemote = async (userId, uuid) => {
+  try {
+    await firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('reminders')
+      .doc(uuid)
+      .delete();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const getRemindersForUser = async uid => {
   let reminders = [];
   try {
+    console.log('u', uid);
     const querySnapshot = await firestore()
       .collection('users')
       .doc(uid)
       .collection('reminders')
       .get();
     querySnapshot.forEach(documentSnapshot => {
-      //console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
+      console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
       reminders.push(documentSnapshot.data());
     });
     return reminders;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const updateReminder = async (col1, doc1, col2, doc2, time) => {
+  var usersUpdate = {};
+  usersUpdate[`upcomingReminders.${time}.notified`] = true;
+  try {
+    await firestore()
+      .collection(col1)
+      .doc(doc1)
+      .collection(col2)
+      .doc(doc2)
+      .update(usersUpdate);
   } catch (err) {
     console.log(err);
   }

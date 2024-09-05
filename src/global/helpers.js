@@ -1,13 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  AndroidImportance,
-  AuthorizationStatus,
-  TimeUnit,
-  TriggerType,
-} from '@notifee/react-native';
 import dayjs from 'dayjs';
-import { saveToDatabase } from './database/Database.helper';
-import notifee from '@notifee/react-native';
+import notifee, { TriggerType } from '@notifee/react-native';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 var relativeTime = require('dayjs/plugin/relativeTime');
 var isBetween = require('dayjs/plugin/isBetween');
@@ -82,7 +77,22 @@ export const getNextReminder = reminder => {
   return dayjs(Number(closestTimestamp));
 };
 
-export const getAllUpcomingReminders = (
+export const resumeNotifications = async reminder => {
+  let quiteDateFrom = dayjs(reminder.quiteDateFrom);
+  let quiteDateTo = dayjs(reminder.quiteDateTo);
+  let currentDate = dayjs().startOf('day');
+
+  // set to quite date to today's date
+  quiteDateFrom = currentDate
+    .add(quiteDateFrom.hour(), 'hours')
+    .add(quiteDateFrom.minute(), 'minutes');
+
+  quiteDateTo = currentDate
+    .add(quiteDateTo.hour(), 'hours')
+    .add(quiteDateTo.minute(), 'minutes');
+};
+
+export const getAllUpcomingReminders = async (
   hours,
   minutes,
   message,
@@ -90,7 +100,10 @@ export const getAllUpcomingReminders = (
   toDate,
   quiteDateFrom,
   quiteDateTo,
+  uid,
+  timezone,
 ) => {
+  const reminderRef = uuidv4();
   let intervalMinutes = getInterval(hours, minutes);
   let currTime = fromDate;
 
@@ -113,16 +126,23 @@ export const getAllUpcomingReminders = (
     if (toDate !== 10 && currTime.isAfter(toDate)) {
       break;
     }
+    let notificationID = await setTimedNotification(
+      message,
+      currTime.valueOf(),
+      uid,
+      reminderRef,
+    );
     upcomingReminders[currTime.valueOf()] = {
       notified: false,
       timestamp: currTime.valueOf(),
+      notificationID,
     };
   }
   return {
     upcomingReminders,
     message,
     hours,
-    timezone: dayjs.tz.guess(),
+    timezone: timezone || dayjs.tz.guess(),
     minutes,
     status: 'ACTIVE',
     intervalMinutes,
@@ -130,7 +150,43 @@ export const getAllUpcomingReminders = (
     toDate: toDate != 10 ? toDate.valueOf() : toDate,
     quiteDateFrom: quiteDateFrom.valueOf(),
     quiteDateTo: quiteDateTo.valueOf(),
+    uuid: reminderRef,
   };
+};
+
+export const deleteNotifications = async list => {
+  try {
+    await Promise.all(list.map(rid => notifee.cancelNotification(rid)));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const setTimedNotification = async (message, time, uid, refId) => {
+  console.log('ini');
+  try {
+    return await notifee.createTriggerNotification(
+      {
+        title: 'Nudge',
+        body: message,
+        data: {
+          uid,
+          time,
+          reminderRef: refId,
+        },
+        android: {
+          channelId: 'reminders',
+        },
+      },
+      {
+        type: TriggerType.TIMESTAMP,
+        //timestamp: dayjs().add(2, 'minute').valueOf(),
+        timestamp: time,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const checkNotficationChannels = async () => {
@@ -159,29 +215,4 @@ const getInterval = (hours, minutes) => {
   let interval = dayjs().add(hours, 'h');
   interval = interval.add(minutes, 'minutes');
   return interval.diff(dayjs(), 'minutes');
-};
-
-export const setReminders = async (occurance, hours, minutes, message) => {
-  var id = dayjs().valueOf();
-  if (occurance == 'every') {
-    let interval = getInterval(hours, minutes);
-    const trigger = {
-      type: TriggerType.INTERVAL,
-      interval: interval,
-      timeUnit: TimeUnit.MINUTES,
-    };
-    await notifee.createTriggerNotification(
-      {
-        id: id.toString(),
-        title: 'Nudge Nudge',
-        body: message,
-        android: {
-          channelId: 'default',
-        },
-      },
-      trigger,
-    );
-  } else {
-  }
-  saveToDatabase(id, occurance, hours, minutes, message);
 };

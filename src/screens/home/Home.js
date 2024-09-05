@@ -4,7 +4,10 @@ import { Text } from 'react-native-paper';
 import AddNewReminderFAB from 'components/addNewReminderFAB/AddNewReminderFAB';
 import messaging from '@react-native-firebase/messaging';
 import useReminderStore from 'store/reminder';
-import { getRemindersForUser, updateDocument } from 'global/services/firestore';
+import {
+  getRemindersForUser,
+  updateUserDocument,
+} from 'global/services/firestore';
 import Loading from 'components/loading/Loading';
 import ActiveReminders from 'components/activereminders/ActiveReminders';
 
@@ -33,7 +36,7 @@ const Home = () => {
       console.log(token);
       if (token != user.token) {
         console.log('updaing token');
-        await updateDocument('users', user.uid, {
+        await updateUserDocument('users', user.uid, {
           token,
         });
         setToken(token);
@@ -43,7 +46,9 @@ const Home = () => {
 
   const getReminders = async () => {
     if (user) {
+      console.log('user', user);
       let reminders = await getRemindersForUser(user.uid);
+      console.log('pppppp', reminders);
       setReminderToStore(reminders);
     }
   };
@@ -60,6 +65,8 @@ const Home = () => {
     return <Loading />;
   }
 
+  console.log('reminders', reminders);
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -67,7 +74,7 @@ const Home = () => {
       contentContainerStyle={{ flexGrow: 1 }}
       showsHorizontalScrollIndicator={false}>
       {!permission && <Text>uh oh</Text>}
-      {Object.keys(reminders).length && (
+      {!!Object.keys(reminders).length && (
         <ActiveReminders reminders={reminders} />
       )}
       <AddNewReminderFAB />

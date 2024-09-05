@@ -2,24 +2,24 @@ import React, { useEffect, useState } from 'react';
 import {
   checkNotficationChannels,
   checkTimeDifference,
-  handleNotificationsCheck,
+  setTimedNotification,
 } from 'global/helpers';
 import { NavigationContainer } from '@react-navigation/native';
 import { HomeNavigation, AuthNavigation } from 'navigations/AppNavigation';
 import Splash from 'components/splash/Splash';
 import useReminderStore from 'store/reminder';
 import auth from '@react-native-firebase/auth';
-import { saveUserToStore } from 'global/services/firestore';
+import { saveUserToStore, updateReminder } from 'global/services/firestore';
 import useMetaStore from 'store/meta';
 
 const App = () => {
-  const [isReady, setIsReady] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const setUserToState = useReminderStore(state => state.setUser);
   const setChannel = useMetaStore(state => state.setChannel);
 
   const authStateChangedHandler = async (user, savedUser) => {
+    console.log('uuuuu', user);
     setUser(user);
     // First time after registration
     if (user && !savedUser) {
@@ -50,7 +50,10 @@ const App = () => {
         useReminderStore.persist.onFinishHydration(state => {
           auth().onAuthStateChanged(user => {
             authStateChangedHandler(user, state.user)
-              .then(() => resolve())
+              .then(
+                //setTimedNotification('pp', 1, user.uid).then(() => resolve()),
+                resolve(),
+              )
               .catch(error => reject(error));
           });
         });
@@ -60,11 +63,13 @@ const App = () => {
     storePromises.push(
       new Promise((resolve, reject) => {
         useMetaStore.persist.onFinishHydration(state => {
-          if (!state.meta.channelCreated) {
+          if (state.meta.channelCreated) {
             checkNotficationChannels().then(() => {
               setChannel(true);
               resolve();
             });
+          } else {
+            resolve();
           }
         });
       }),
@@ -81,6 +86,7 @@ const App = () => {
 
   useEffect(() => {
     Promise.all([hydrateStores()]).then(() => {
+      console.log('ss');
       setInitializing(false);
     });
   }, []);

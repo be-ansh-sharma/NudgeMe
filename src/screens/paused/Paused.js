@@ -1,12 +1,23 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { ScrollView } from 'react-native';
+import AddNewReminderFAB from 'components/addNewReminderFAB/AddNewReminderFAB';
+import useReminderStore from 'store/reminder';
+import PausedReminders from 'components/pausedreminders/PausedReminders';
 
 const Paused = () => {
+  let reminders = useReminderStore(state => state.reminders);
+
   return (
-    <View>
-      <Text>asdawd</Text>
-    </View>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{ flex: 1 }}
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsHorizontalScrollIndicator={false}>
+      {!!Object.keys(reminders).length && (
+        <PausedReminders reminders={reminders} />
+      )}
+      <AddNewReminderFAB />
+    </ScrollView>
   );
 };
 

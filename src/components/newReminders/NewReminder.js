@@ -3,12 +3,7 @@ import { Pressable, View } from 'react-native';
 import { Button, HelperText, Text } from 'react-native-paper';
 import { OCCURANCE } from 'global/constants';
 import styles from './NewReminder.style';
-import {
-  getAllUpcomingReminders,
-  getHours,
-  getMinutes,
-  setReminders,
-} from 'global/helpers';
+import { getAllUpcomingReminders, getHours, getMinutes } from 'global/helpers';
 import CustomDropdown from 'components/picker/dropdown/Dropdown';
 import DataTime from 'components/picker/datatime/DataTime';
 import { TextInput } from 'react-native-paper';
@@ -61,7 +56,7 @@ const NewReminder = () => {
       setHasError('Custom Date is not set');
     } else {
       setHasError(false);
-      let reminders = getAllUpcomingReminders(
+      let reminders = await getAllUpcomingReminders(
         hours,
         minutes,
         message,
@@ -69,6 +64,7 @@ const NewReminder = () => {
         toInfSelect ? 10 : dayjs(customToDate),
         dayjs(quiteTimeFrom),
         dayjs(quiteTimeTo),
+        user.uid,
       );
       await addRemindersToUser('users', user.uid, 'reminders', reminders);
       setReminderToStore(reminders);
