@@ -33,9 +33,7 @@ const Home = () => {
   const checkFCM = async () => {
     if (user) {
       const token = await messaging().getToken();
-      console.log(token);
       if (token != user.token) {
-        console.log('updaing token');
         await updateUserDocument('users', user.uid, {
           token,
         });
@@ -46,9 +44,7 @@ const Home = () => {
 
   const getReminders = async () => {
     if (user) {
-      console.log('user', user);
       let reminders = await getRemindersForUser(user.uid);
-      console.log('pppppp', reminders);
       setReminderToStore(reminders);
     }
   };
@@ -64,8 +60,6 @@ const Home = () => {
   if (!isReady) {
     return <Loading />;
   }
-
-  console.log('reminders', reminders);
 
   return (
     <ScrollView

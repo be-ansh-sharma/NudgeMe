@@ -53,7 +53,6 @@ const LoginRegister = () => {
 };
 
 export const AuthNavigation = () => {
-  console.log('pp');
   return (
     <Stack.Navigator>
       <Stack.Screen

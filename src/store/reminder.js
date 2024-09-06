@@ -9,8 +9,11 @@ const useReminderStore = create(
     (set, get) => ({
       reminders: {},
       user: null,
-      meta: {
-        channelCreated: false,
+      cleanState: () => {
+        set({
+          reminder: {},
+          user: null,
+        });
       },
       setReminderToStore: async r => {
         let currentReminder = get().reminders;

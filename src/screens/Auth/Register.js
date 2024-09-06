@@ -25,7 +25,7 @@ const Register = () => {
   };
   return (
     <View style={styles.container}>
-      <AuthForm onSubmit={onSubmitHandler} />
+      <AuthForm onSubmit={onSubmitHandler} location="register" />
       {error && <Snack message={error} messageHandler={setError} />}
     </View>
   );

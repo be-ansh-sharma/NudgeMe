@@ -62,14 +62,12 @@ export const deleteReminderFromRemote = async (userId, uuid) => {
 export const getRemindersForUser = async uid => {
   let reminders = [];
   try {
-    console.log('u', uid);
     const querySnapshot = await firestore()
       .collection('users')
       .doc(uid)
       .collection('reminders')
       .get();
     querySnapshot.forEach(documentSnapshot => {
-      console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
       reminders.push(documentSnapshot.data());
     });
     return reminders;

@@ -18,7 +18,6 @@ export const saveToDatabase = async (
       message,
       'active',
     );
-    console.log('pp');
   } catch (err) {
     console.log(err);
   }
@@ -33,8 +32,6 @@ export const fetchActiveReminders = async () => {
     allRows = await dbObj._db.getAllAsync(
       `SELECT * FROM nudgeme where status = 'active'`,
     );
-    console.log('pop');
-    console.log(allRows);
   } catch (err) {
     console.log(err);
   }

@@ -19,7 +19,6 @@ const App = () => {
   const setChannel = useMetaStore(state => state.setChannel);
 
   const authStateChangedHandler = async (user, savedUser) => {
-    console.log('uuuuu', user);
     setUser(user);
     // First time after registration
     if (user && !savedUser) {
@@ -50,11 +49,12 @@ const App = () => {
         useReminderStore.persist.onFinishHydration(state => {
           auth().onAuthStateChanged(user => {
             authStateChangedHandler(user, state.user)
-              .then(
-                //setTimedNotification('pp', 1, user.uid).then(() => resolve()),
-                resolve(),
-              )
-              .catch(error => reject(error));
+              .then(() => {
+                resolve();
+              })
+              .catch(error => {
+                console.log(error);
+              });
           });
         });
       }),
@@ -86,7 +86,7 @@ const App = () => {
 
   useEffect(() => {
     Promise.all([hydrateStores()]).then(() => {
-      console.log('ss');
+      console.log('done');
       setInitializing(false);
     });
   }, []);

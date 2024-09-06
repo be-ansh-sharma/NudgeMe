@@ -4,7 +4,11 @@ import { View } from 'react-native';
 import { Button, Menu, ProgressBar, Text } from 'react-native-paper';
 import styles from './Tile.style';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { deleteNotifications, getNextReminder } from 'global/helpers';
+import {
+  deleteNotifications,
+  getNextReminder,
+  resumeNotifications,
+} from 'global/helpers';
 import dayjs from 'dayjs';
 import DialogAlert from 'components/dialogalert/DialogAlert';
 import {
@@ -41,14 +45,12 @@ const Tile = ({ reminder }) => {
   const updateTimer =
     reminderStatus === 'ACTIVE'
       ? () => {
-          console.log('jjj', reminder);
           let nextReminder = getNextReminder(reminder);
           let currentProgress = Math.abs(nextReminder.diff(dayjs(), 'm'));
           let intervalMinutes = reminder.intervalMinutes;
 
           setMin(dayjs().to(nextReminder));
           if (intervalMinutes > currentProgress) {
-            console.log('rr', currentProgress);
             setProgress((intervalMinutes - currentProgress) / intervalMinutes);
           }
         }
@@ -82,9 +84,38 @@ const Tile = ({ reminder }) => {
   const resumeReminder =
     reminderStatus === 'PAUSED'
       ? async () => {
-          await updateReminderDocument(user.uid, reminder.uuid, {
-            status: 'ACTIVE',
-          });
+          let hasEnoughDiff =
+            reminder.toDate == 10
+              ? true
+              : reminder.toDate >
+                dayjs(reminder.fromDate)
+                  .add(3 * reminder.intervalMinutes, 'm')
+                  .valueOf();
+
+          if (!hasEnoughDiff) {
+            setDialog({
+              show: true,
+              accept: () => {
+                setDialog({
+                  show: false,
+                });
+              },
+              reject: () => {
+                setDialog({
+                  show: false,
+                });
+              },
+              message:
+                'Reminder is about to expire. Please edit or create a new one',
+            });
+            return;
+          }
+          let updatedReminder = await resumeNotifications(reminder);
+          await updateReminderDocument(
+            user.uid,
+            reminder.uuid,
+            updatedReminder,
+          );
           resumeReminderInLocal(reminder.uuid);
         }
       : undefined;

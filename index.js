@@ -12,7 +12,6 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
   const { notification, pressAction } = detail;
 
   // Check if the user pressed the "Mark as read" action
-  console.log('notification', notification);
   await updateReminder(
     'users',
     notification.data.uid,

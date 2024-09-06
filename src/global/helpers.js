@@ -90,6 +90,19 @@ export const resumeNotifications = async reminder => {
   quiteDateTo = currentDate
     .add(quiteDateTo.hour(), 'hours')
     .add(quiteDateTo.minute(), 'minutes');
+
+  return await getAllUpcomingReminders(
+    reminder.hours,
+    reminder.minutes,
+    reminder.message,
+    dayjs(reminder.fromDate),
+    reminder.toDate === 10 ? reminder.toDate : dayjs(reminder.toDate),
+    quiteDateFrom,
+    quiteDateTo,
+    reminder.uid,
+    reminder.timezone,
+    reminder.uuid,
+  );
 };
 
 export const getAllUpcomingReminders = async (
@@ -102,8 +115,9 @@ export const getAllUpcomingReminders = async (
   quiteDateTo,
   uid,
   timezone,
+  uuid,
 ) => {
-  const reminderRef = uuidv4();
+  const reminderRef = uuid || uuidv4();
   let intervalMinutes = getInterval(hours, minutes);
   let currTime = fromDate;
 
@@ -151,6 +165,7 @@ export const getAllUpcomingReminders = async (
     quiteDateFrom: quiteDateFrom.valueOf(),
     quiteDateTo: quiteDateTo.valueOf(),
     uuid: reminderRef,
+    uid,
   };
 };
 
@@ -163,7 +178,6 @@ export const deleteNotifications = async list => {
 };
 
 export const setTimedNotification = async (message, time, uid, refId) => {
-  console.log('ini');
   try {
     return await notifee.createTriggerNotification(
       {

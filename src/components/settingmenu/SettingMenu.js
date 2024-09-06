@@ -4,6 +4,7 @@ import { Button, Menu } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
 import { COLOR } from 'global/styles';
+import useReminderStore from 'store/reminder';
 
 const SettingMenu = () => {
   const [visible, setVisible] = React.useState(false);
@@ -12,8 +13,11 @@ const SettingMenu = () => {
 
   const closeMenu = () => setVisible(false);
 
+  let cleanLocalState = useReminderStore(state => state.cleanState);
+
   const logout = () => {
     closeMenu();
+    cleanLocalState();
     auth()
       .signOut()
       .then(() => console.log('User signed out!'));

@@ -17,10 +17,9 @@ const Login = () => {
         setError(err.code);
       });
   };
-  console.log('inside', error);
   return (
     <View style={styles.container}>
-      <AuthForm onSubmit={onSubmitHandler} />
+      <AuthForm onSubmit={onSubmitHandler} location="login" />
       {error && <Snack message={error} messageHandler={setError} />}
     </View>
   );

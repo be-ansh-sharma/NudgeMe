@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Button, HelperText, Text } from 'react-native-paper';
-import { OCCURANCE } from 'global/constants';
 import styles from './NewReminder.style';
 import { getAllUpcomingReminders, getHours, getMinutes } from 'global/helpers';
 import CustomDropdown from 'components/picker/dropdown/Dropdown';
@@ -40,8 +39,6 @@ const NewReminder = () => {
   };
 
   const onSubmit = async () => {
-    console.log(customFromdate);
-    console.log(customToDate);
     if (!hours) {
       setHasError('Value is missing');
     } else if (!minutes) {
